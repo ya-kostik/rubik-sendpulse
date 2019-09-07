@@ -154,4 +154,14 @@ describe('Кубик Сендпульса', () => {
 
     await app.down();
   });
+
+  test('Получает черный список', async () => {
+    const { app, kubik } = get();
+    await app.up();
+
+    const result = await kubik.blacklist.get();
+    expect(result).toBeInstanceOf(Array);
+
+    await app.down();
+  });
 });
