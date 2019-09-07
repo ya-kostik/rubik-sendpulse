@@ -135,4 +135,14 @@ describe('Кубик Сендпульса', () => {
 
     await app.down();
   });
+
+  test('Получает отправителей', async () => {
+    const { app, kubik } = get();
+    await app.up();
+
+    const result = await kubik.senders.get();
+    expect(result).toBeInstanceOf(Array);
+
+    await app.down();
+  });
 });
