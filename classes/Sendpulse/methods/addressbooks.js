@@ -12,5 +12,6 @@ module.exports = [
   ['GET', 'addressbooks/{{id}}/variables/{{name}}/{{value}}', 'getEmailsByVariable'],
   ['POST', 'addressbooks/{{id}}/emails', 'createEmail'],
   ['DELETE', 'addressbooks/{{id}}/emails', 'removeEmail'],
-  ['GET', 'addressbooks/{{id}}/campaigns', 'getCampaigns']
+  ['GET', 'addressbooks/{{id}}/campaigns', 'getCampaigns'],
+  ['POST', 'addressbooks/{{id}}/emails/variable', 'editVariablesForEmail']
 ];

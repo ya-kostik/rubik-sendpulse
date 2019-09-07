@@ -64,7 +64,7 @@ class Sendpulse extends Kubik {
 
     const response = await request.json();
 
-    if (response.error) {
+    if (response.error || response.error_code) {
       throw new SendpulseError(response);
     }
 
@@ -112,7 +112,9 @@ class Sendpulse extends Kubik {
 
     const response = await request.json();
 
-    if (response.error) throw new SendpulseError(response);
+    if (response.error || response.error_code) {
+      throw new SendpulseError(response);
+    }
 
     return response;
   }

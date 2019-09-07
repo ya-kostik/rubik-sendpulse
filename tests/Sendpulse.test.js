@@ -145,4 +145,13 @@ describe('Кубик Сендпульса', () => {
 
     await app.down();
   });
+
+  test('Не получает адрес электронной почты', async () => {
+    const { app, kubik } = get();
+    await app.up();
+
+    await expect(kubik.emails.getOne({ email: 'a@example.com' })).rejects.toThrow('502: No such email');
+
+    await app.down();
+  });
 });
