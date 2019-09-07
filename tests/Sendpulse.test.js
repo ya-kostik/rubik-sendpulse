@@ -93,4 +93,14 @@ describe('Кубик Сендпульса', () => {
 
     await app.down();
   });
+
+  test('Получает кампании', async () => {
+    const { app, kubik } = get();
+    await app.up();
+
+    const result = await kubik.campaigns.get();
+    expect(result).toBeInstanceOf(Array);
+
+    await app.down();
+  });
 });

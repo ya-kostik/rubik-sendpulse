@@ -1,3 +1,4 @@
 module.exports = {
-  addressbooks: require('./methods/addressbooks.js')
+  addressbooks: require('./methods/addressbooks'),
+  campaigns: require('./methods/campaigns')
 };
