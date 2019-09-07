@@ -84,7 +84,7 @@ class Sendpulse extends Kubik {
   getUrl(path, params, method) {
     if (!isObject(params)) params = {};
     const qs = method === 'GET' ? querystring.stringify(params) : '';
-    return `${this.host}${mustache.render(path, params)}${qs}`;
+    return `${this.host}${mustache.render(path, params)}${qs ? `?${qs}` : ''}`;
   }
 
   async getHeaders() {

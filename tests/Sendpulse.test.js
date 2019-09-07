@@ -103,4 +103,36 @@ describe('Кубик Сендпульса', () => {
 
     await app.down();
   });
+
+  test('Получает шаблоны', async () => {
+    const { app, kubik } = get();
+    await app.up();
+
+    const result = await kubik.templates.get();
+    expect(result).toBeInstanceOf(Array);
+
+    await app.down();
+  });
+
+  test('Получает встроенные шаблоны сендпульса', async () => {
+    const { app, kubik } = get();
+    await app.up();
+
+    const result = await kubik.templates.get({ owner: 'sendpulse' });
+    expect(result).toBeInstanceOf(Array);
+    expect(result.length > 0).toBe(true);
+
+    await app.down();
+  });
+
+  test('Получает шаблоны по языку', async () => {
+    const { app, kubik } = get();
+    await app.up();
+
+    const result = await kubik.templates.getByLang({ lang: 'ru' });
+    expect(result).toBeInstanceOf(Array);
+    expect(result.length > 0).toBe(true);
+
+    await app.down();
+  });
 });
