@@ -1,5 +1,5 @@
 # rubik-sendpulse
-Telegram's Bot API kubik for the Rubik
+Sendpulse's Bot API kubik for the Rubik
 
 ## Install
 
