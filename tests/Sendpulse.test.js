@@ -164,4 +164,34 @@ describe('Кубик Сендпульса', () => {
 
     await app.down();
   });
+
+  test('Получает баланс', async () => {
+        const { app, kubik } = get();
+    await app.up();
+
+    const result = await kubik.balance.get();
+    expect(result.currency).toBeDefined();
+
+    await app.down();
+  });
+
+  test('Получает баланс по USD', async () => {
+        const { app, kubik } = get();
+    await app.up();
+
+    const result = await kubik.balance.getByCurrency({ currency: 'USD' });
+    expect(result.currency).toBe('USD');
+
+    await app.down();
+  });
+
+  test('Получает детализированный баланс', async () => {
+        const { app, kubik } = get();
+    await app.up();
+
+    const result = await kubik.balance.getDetailed();
+    expect(result.balance).toBeDefined();
+
+    await app.down();
+  });
 });

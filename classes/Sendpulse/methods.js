@@ -4,5 +4,6 @@ module.exports = {
   templates: require('./methods/templates'),
   senders: require('./methods/senders'),
   emails: require('./methods/emails'),
-  blacklist: require('./methods/blacklist')
+  blacklist: require('./methods/blacklist'),
+  balance: require('./methods/balance')
 };

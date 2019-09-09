@@ -10,9 +10,9 @@ module.exports = [
   ['GET', 'addressbooks/{{id}}/emails/total', 'getEmailsCount'],
   ['GET', 'addressbooks/{{id}}/emails/{{email}}', 'getEmail'],
   ['GET', 'addressbooks/{{id}}/variables/{{name}}/{{value}}', 'getEmailsByVariable'],
-  ['POST', 'addressbooks/{{id}}/emails', 'createEmail'],
-  ['DELETE', 'addressbooks/{{id}}/emails', 'removeEmail'],
+  ['POST', 'addressbooks/{{id}}/emails', 'createEmails'],
+  ['DELETE', 'addressbooks/{{id}}/emails', 'removeEmails'],
   ['GET', 'addressbooks/{{id}}/campaigns', 'getCampaigns'],
   ['POST', 'addressbooks/{{id}}/emails/variable', 'editVariablesForEmail'],
-  ['GET', 'addressbooks/{{id}}/emails/unsubscribe', 'unsubscribe']
+  ['POST', 'addressbooks/{{id}}/emails/unsubscribe', 'unsubscribe']
 ];
