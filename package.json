@@ -1,6 +1,6 @@
 {
   "name": "rubik-sendpulse",
-  "version": "v0.5.1",
+  "version": "v0.5.2",
   "description": "Sendpulse API kubik for the Rubik application system",
   "main": "classes/Sendpulse.js",
   "author": "Constantin T.",
@@ -23,7 +23,8 @@
   "dependencies": {
     "lodash": "^4.17.15",
     "mustache": "^3.0.3",
-    "node-fetch": "^2.6.0"
+    "node-fetch": "^2.6.0",
+    "serialize-like-php": "^1.0.1"
   },
   "peerDependencies": {
     "rubik-main": "^2.1.3"

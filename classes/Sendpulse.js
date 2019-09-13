@@ -3,6 +3,7 @@ const { Kubik } = require('rubik-main');
 const fetch = require('node-fetch');
 const mustache = require('mustache');
 const isObject = require('lodash/isObject');
+const { serialize } = require('serialize-like-php');
 
 
 const methods = require('./Sendpulse/methods');
@@ -12,6 +13,15 @@ const DEFAULT_HOST = 'https://api.sendpulse.com/';
 
 const SECOND = 1000;
 
+/**
+ * The Sendpulse kubik for the Rubik
+ * @class
+ * @prop {String} id account id
+ * @prop {String} secret acount secret
+ * @prop {String} host the senpulse's API host
+ * @prop {String} token Bearer token
+ * @prop {Date}   tokenExpiresAt Date object of token expiration
+ */
 class Sendpulse extends Kubik {
   constructor(id, secret, host) {
     super(...arguments);
@@ -25,12 +35,15 @@ class Sendpulse extends Kubik {
     this.generateMethods();
   }
 
+  /**
+   * Generate API methods
+   */
   generateMethods() {
     Object.entries(methods).forEach(([namespace, methods]) => {
       const space = {};
-      methods.forEach(([method, path, name]) => {
+      methods.forEach(([method, path, name, toSerialize]) => {
         space[name] = (params) => {
-          return this.request(method, path, params);
+          return this.request(method, path, params, toSerialize);
         }
       });
       Object.freeze(space);
@@ -38,6 +51,10 @@ class Sendpulse extends Kubik {
     });
   }
 
+  /**
+   * Request OAuth2 token
+   * @return {Promise}
+   */
   async requestToken() {
     if (this.token && this.tokenExpiresAt) {
       if (Date.now() < this.tokenExpiresAt) return this.token;
@@ -81,12 +98,23 @@ class Sendpulse extends Kubik {
     return this.token;
   }
 
+  /**
+   * Get request url
+   * @param  {String} path   API path
+   * @param  {Object} params to call
+   * @param  {String} method HTTP method
+   * @return {String}
+   */
   getUrl(path, params, method) {
     if (!isObject(params)) params = {};
     const qs = method === 'GET' ? querystring.stringify(params) : '';
     return `${this.host}${mustache.render(path, params)}${qs ? `?${qs}` : ''}`;
   }
 
+  /**
+   * Get request headers
+   * @return {Promise<Object>}
+   */
   async getHeaders() {
     await this.requestToken();
 
@@ -96,19 +124,64 @@ class Sendpulse extends Kubik {
     }
   }
 
+  /**
+   * Get request body
+   * @param  {Object|String} params
+   * @param  {String} method
+   * @return {String|undefined} undefined if request method is GET
+   */
   getBody(params, method) {
     if (method === 'GET') return;
     return isObject(params) ? JSON.stringify(params) : params;
   }
 
-  async request(method, path, params) {
-    const headers = await this.getHeaders();
+  /**
+   * Serialize params fields
+   * @param  {Object} params
+   * @param  {Array}  toSerialize fields to serialize
+   * @return {Mixed}
+   */
+  serialize(params, toSerialize) {
+    if (!params) return params;
+    if (!toSerialize) return params;
+    if (!(Array.isArray(toSerialize) && toSerialize.length)) return params;
+    params = Object.assign({}, params);
+    for (const name of toSerialize) {
+      if (!params[name]) continue;
+      params[name] = serialize(params[name]);
+    }
 
-    const request = await fetch(this.getUrl(path, params, method), {
-      method,
-      body: this.getBody(params, method),
-      headers
-    });
+    return params;
+  }
+
+  /**
+   * Prepare request entities
+   * @param  {String}  method  HTTP method
+   * @param  {String}  path    API path
+   * @param  {Object} [params] request params
+   * @param  {Array}  [toSerialize] fields from params to PHP serialize
+   * @return {Promise<Object>} { url, body, headers }
+   */
+  async prepareToRequest(method, path, params, toSerialize) {
+    params = this.serialize(params, toSerialize);
+    const url = this.getUrl(path, params, method);
+    const body = this.getBody(params, method);
+    const headers = await this.getHeaders();
+    return { url, body, headers };
+  }
+
+  /**
+   * Request to API
+   * @param  {String}  method  HTTP method
+   * @param  {String}  path    API path
+   * @param  {Object} [params] request params
+   * @param  {Array}  [toSerialize=[]] fields from params to PHP serialize
+   * @return {Promise}
+   */
+  async request(method, path, params, toSerialize) {
+    const { url, headers, body } = await this.prepareToRequest(method, path, params, toSerialize);
+
+    const request = await fetch(url, { method, body, headers });
 
     const response = await request.json();
 

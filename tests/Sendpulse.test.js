@@ -176,7 +176,7 @@ describe('Кубик Сендпульса', () => {
   });
 
   test('Получает баланс по USD', async () => {
-        const { app, kubik } = get();
+    const { app, kubik } = get();
     await app.up();
 
     const result = await kubik.balance.getByCurrency({ currency: 'USD' });
@@ -191,6 +191,29 @@ describe('Кубик Сендпульса', () => {
 
     const result = await kubik.balance.getDetailed();
     expect(result.balance).toBeDefined();
+
+    await app.down();
+  });
+
+  test('Сериализует данные по методу', async () => {
+    const method = [
+      'POST',
+      'addressbooks/{{id}}/emails',
+      {
+        emails: [
+          'c@example.com',
+          { email: 'c@example.ru', variables: [{ name: 'a', value: 'b' }] }
+        ]
+      },
+      ['emails']
+    ];
+
+    const { app, kubik } = get();
+    await app.up();
+
+    const { body } = await kubik.prepareToRequest(...method);
+    const parsed = JSON.parse(body);
+    expect(isString(parsed.emails)).toBe(true);
 
     await app.down();
   });

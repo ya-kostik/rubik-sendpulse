@@ -1,5 +1,5 @@
 module.exports = [
-  ['POST', 'campaigns', 'create'],
+  ['POST', 'campaigns', 'create', ['attachments']],
   ['PATCH', 'campaigns', 'edit'],
   ['GET', 'campaigns', 'get'],
   ['DELETE', 'campaigns/{{id}}', 'remove'],
